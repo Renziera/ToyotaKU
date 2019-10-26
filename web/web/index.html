@@ -2,9 +2,24 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>dashboard</title>
+  <title>ToyotaKU</title>
 </head>
 <body>
+  <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-firestore.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAWtcaIFJT6TZEF4K0_1UpGmzN8L2iTfqE",
+      authDomain: "toyota-ku.firebaseapp.com",
+      databaseURL: "https://toyota-ku.firebaseio.com",
+      projectId: "toyota-ku",
+      storageBucket: "toyota-ku.appspot.com",
+      messagingSenderId: "672397440929",
+      appId: "1:672397440929:web:60175a506911788392bde0"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+  </script>
   <script src="main.dart.js" type="application/javascript"></script>
 </body>
 </html>

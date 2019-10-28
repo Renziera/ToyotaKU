@@ -1,4 +1,4 @@
-import 'package:dashboard/entertainment.dart';
+import 'package:dashboard/antrian.dart';
 import 'package:dashboard/mobil.dart';
 import 'package:dashboard/sparepart.dart';
 import 'package:firebase/firebase.dart';
@@ -14,28 +14,37 @@ class _HomeState extends State<Home> {
   final Firestore db = firestore();
 
   final List<Widget> _pages = [
+    Antrian(),
     SparePart(),
     Mobil(),
-    Entertainment(),
+  ];
+
+  final List<String> _titles = [
+    'Antrian',
+    'Spare Parts',
+    'Mobil',
   ];
 
   int _index = 0;
 
   void _addData() async {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Tambah Mobil'),
-          );
-        });
+    switch (_index) {
+      case 2:
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return TambahMobil();
+            });
+        break;
+      default:
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dashboard ToyotaKU'),
+        title: Text(_titles[_index]),
       ),
       body: _pages[_index],
       floatingActionButton: FloatingActionButton(
@@ -54,8 +63,8 @@ class _HomeState extends State<Home> {
               decoration: BoxDecoration(color: Colors.blue),
             ),
             ListTile(
-              title: Text('Spare Parts'),
-              leading: Icon(Icons.settings),
+              title: Text('Antrian'),
+              leading: Icon(Icons.av_timer),
               onTap: () {
                 setState(() {
                   _index = 0;
@@ -64,8 +73,8 @@ class _HomeState extends State<Home> {
               },
             ),
             ListTile(
-              title: Text('Mobil'),
-              leading: Icon(Icons.directions_car),
+              title: Text('Spare Parts'),
+              leading: Icon(Icons.settings),
               onTap: () {
                 setState(() {
                   _index = 1;
@@ -74,8 +83,8 @@ class _HomeState extends State<Home> {
               },
             ),
             ListTile(
-              title: Text('Entertainment'),
-              leading: Icon(Icons.movie),
+              title: Text('Mobil'),
+              leading: Icon(Icons.directions_car),
               onTap: () {
                 setState(() {
                   _index = 2;
@@ -86,6 +95,62 @@ class _HomeState extends State<Home> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class TambahMobil extends StatelessWidget {
+  final TextEditingController _tipeController = TextEditingController();
+  final TextEditingController _rangkaController = TextEditingController();
+  final TextEditingController _mesinController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Tambah Mobil'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          TextField(
+            controller: _tipeController,
+            decoration: InputDecoration(hintText: 'Tipe mobil'),
+          ),
+          TextField(
+            controller: _rangkaController,
+            decoration: InputDecoration(hintText: 'Nomor rangka'),
+          ),
+          TextField(
+            controller: _mesinController,
+            decoration: InputDecoration(hintText: 'Nomor mesin'),
+          ),
+        ],
+      ),
+      actions: <Widget>[
+        RaisedButton(
+          color: Colors.red,
+          child: Text('Batal'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        RaisedButton(
+          color: Colors.blue,
+          child: Text('Tambah'),
+          onPressed: () {
+            if (_tipeController.text.isEmpty ||
+                _rangkaController.text.isEmpty ||
+                _mesinController.text.isEmpty) return;
+            firestore().collection('mobil').add({
+              'tipe': _tipeController.text,
+              'no_rangka': _rangkaController.text,
+              'no_mesin': _mesinController.text,
+              'owned': false,
+              'created_at': FieldValue.serverTimestamp(),
+            });
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
     );
   }
 }

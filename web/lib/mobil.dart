@@ -20,9 +20,12 @@ class _MobilState extends State<Mobil> {
         if (snapshot.connectionState == ConnectionState.waiting)
           return Center(child: CircularProgressIndicator());
         return ListView(
-          children: snapshot.data.docs.map((doc){
+          children: snapshot.data.docs.map((doc) {
             return ListTile(
               title: Text(doc.data()['tipe']),
+              subtitle:
+                  Text(doc.data()['no_rangka'] + '\n' + doc.data()['no_mesin']),
+              isThreeLine: true,
             );
           }).toList(),
         );

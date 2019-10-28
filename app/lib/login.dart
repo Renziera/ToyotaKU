@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -23,7 +24,13 @@ class _LoginState extends State<Login> {
       idToken: googleAuth.idToken,
     );
 
-    await _auth.signInWithCredential(credential);
+    AuthResult result = await _auth.signInWithCredential(credential);
+
+    Firestore.instance.collection('users').document(result.user.uid).setData({
+      'servis': false,
+      'created_at': FieldValue.serverTimestamp(),
+    });
+
     Navigator.of(context)
         .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
   }

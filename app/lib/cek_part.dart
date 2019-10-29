@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:toyotaku/main.dart';
 
 class CekPart extends StatefulWidget {
   @override
@@ -51,7 +52,7 @@ class _CekPartState extends State<CekPart> {
                   ],
                 ),
                 RaisedButton(
-                  textColor: Colors.red,
+                  textColor: MERAH,
                   child: Text('KODE'),
                   onPressed: () {},
                 ),
@@ -72,15 +73,15 @@ class _CekPartState extends State<CekPart> {
             children: <Widget>[
               IconButton(
                 icon: Icon(Icons.flip),
-                color: Colors.red,
-                onPressed: (){
+                color: MERAH,
+                onPressed: () {
                   _controller.flipCamera();
                 },
               ),
               IconButton(
                 icon: Icon(Icons.flash_on),
-                color: Colors.red,
-                onPressed: (){
+                color: MERAH,
+                onPressed: () {
                   _controller.toggleFlash();
                 },
               ),

@@ -30,7 +30,12 @@ class _SplashState extends State<Splash> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.red,
+      height: double.infinity,
+      width: double.infinity,
+      color: Colors.white,
+      child: Center(
+        child: Image.asset('img/logo.png'),
+      ),
     );
   }
 }

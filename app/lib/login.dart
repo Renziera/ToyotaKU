@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:toyotaku/home.dart';
+import 'package:toyotaku/main.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -41,6 +42,8 @@ class _LoginState extends State<Login> {
       appBar: AppBar(),
       body: Center(
         child: RaisedButton(
+          color: MERAH,
+          textColor: Colors.white,
           child: Text('Continue with Google'),
           onPressed: _signIn,
         ),

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:toyotaku/main.dart';
 
 class HomePage extends StatefulWidget {
   final Function setPage;
@@ -23,7 +24,7 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Card(
-                color: Colors.red,
+                color: MERAH,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: FutureBuilder<FirebaseUser>(

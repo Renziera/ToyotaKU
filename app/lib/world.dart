@@ -2,6 +2,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:toyotaku/main.dart';
 
 class ToyotaWorld extends StatefulWidget {
   @override
@@ -444,7 +446,7 @@ class _MovieDetailState extends State<MovieDetail> {
                                 )
                               : SizedBox.shrink(),
                           RaisedButton(
-                            color: Colors.red,
+                            color: MERAH,
                             textColor: Colors.white,
                             child: Text('WATCH TRAILER'),
                             onPressed: () {},
@@ -456,7 +458,7 @@ class _MovieDetailState extends State<MovieDetail> {
                             onPressed: () async {
                               FirebaseUser user =
                                   await FirebaseAuth.instance.currentUser();
-                              Firestore.instance
+                              await Firestore.instance
                                   .collection('users')
                                   .document(user.uid)
                                   .collection('playlist')
@@ -465,6 +467,7 @@ class _MovieDetailState extends State<MovieDetail> {
                                 'gambar': widget.gambar,
                                 'created_at': FieldValue.serverTimestamp(),
                               });
+                              Fluttertoast.showToast(msg: 'Added to Playlist');
                             },
                           ),
                         ],

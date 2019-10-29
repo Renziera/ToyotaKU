@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:toyotaku/cek_part.dart';
+import 'package:toyotaku/main.dart';
 import 'package:toyotaku/mycars.dart';
 import 'package:toyotaku/page_home.dart';
 import 'package:toyotaku/profile.dart';
@@ -39,6 +40,7 @@ class _HomeState extends State<Home> {
       body: _pages[_index],
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.check),
+        backgroundColor: MERAH,
         onPressed: () {
           setState(() {
             _index = 2;
@@ -47,7 +49,7 @@ class _HomeState extends State<Home> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Colors.red,
+        selectedItemColor: MERAH,
         unselectedItemColor: Colors.grey,
         currentIndex: _index,
         onTap: _setPage,

@@ -57,7 +57,7 @@ class _HomeState extends State<Home> {
             title: Text('Home'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.directions_car),
             title: Text('My Cars'),
           ),
           BottomNavigationBarItem(
@@ -65,11 +65,11 @@ class _HomeState extends State<Home> {
             title: Text(''),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.ondemand_video),
             title: Text('Toyota World'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.account_circle),
             title: Text('Profile'),
           ),
         ],

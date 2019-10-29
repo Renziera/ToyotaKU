@@ -14,10 +14,29 @@ class _MyCarsState extends State<MyCars> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: (){},
+            onPressed: () {},
           ),
         ],
       ),
     );
+  }
+}
+
+String carImage(String s) {
+  s = s.toLowerCase();
+  if (s.contains('tundra')) {
+    return 'img/tundra.png';
+  } else if (s.contains('camry')) {
+    return 'img/camry.png';
+  } else if (s.contains('fj')) {
+    return 'img/fj.png';
+  } else if (s.contains('gt86')) {
+    return 'img/gt86.png';
+  } else if (s.contains('supra')) {
+    return 'img/supra.png';
+  } else if (s.contains('cruiser')) {
+    return 'img/cruiser.png';
+  } else {
+    return 'img/camry.png';
   }
 }

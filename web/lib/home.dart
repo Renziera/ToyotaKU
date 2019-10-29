@@ -101,6 +101,7 @@ class _HomeState extends State<Home> {
 
 class TambahMobil extends StatelessWidget {
   final TextEditingController _tipeController = TextEditingController();
+  final TextEditingController _tahunController = TextEditingController();
   final TextEditingController _rangkaController = TextEditingController();
   final TextEditingController _mesinController = TextEditingController();
 
@@ -114,6 +115,10 @@ class TambahMobil extends StatelessWidget {
           TextField(
             controller: _tipeController,
             decoration: InputDecoration(hintText: 'Tipe mobil'),
+          ),
+          TextField(
+            controller: _tahunController,
+            decoration: InputDecoration(hintText: 'Tahun'),
           ),
           TextField(
             controller: _rangkaController,
@@ -142,6 +147,7 @@ class TambahMobil extends StatelessWidget {
                 _mesinController.text.isEmpty) return;
             firestore().collection('mobil').add({
               'tipe': _tipeController.text,
+              'tahun': _tahunController.text,
               'no_rangka': _rangkaController.text,
               'no_mesin': _mesinController.text,
               'owned': false,

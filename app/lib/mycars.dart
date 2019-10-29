@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:toyotaku/main.dart';
 
 class MyCars extends StatefulWidget {
@@ -8,6 +12,18 @@ class MyCars extends StatefulWidget {
 }
 
 class _MyCarsState extends State<MyCars> {
+  String _uid;
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseAuth.instance.currentUser().then((user) {
+      setState(() {
+        _uid = user.uid;
+      });
+    });
+  }
+
   void _addCar() {
     showDialog(
       context: context,
@@ -27,6 +43,53 @@ class _MyCarsState extends State<MyCars> {
           ),
         ],
       ),
+      body: _uid == null
+          ? Center(child: CircularProgressIndicator())
+          : StreamBuilder<QuerySnapshot>(
+              stream: Firestore.instance
+                  .collection('users')
+                  .document(_uid)
+                  .collection('mobil')
+                  .orderBy('created_at', descending: true)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) return Text(snapshot.error);
+                if (snapshot.connectionState == ConnectionState.waiting)
+                  return Center(child: CircularProgressIndicator());
+                return ListView(
+                  children: snapshot.data.documents.map((doc) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) =>
+                                  CarDetail(id: doc.documentID)));
+                        },
+                        child: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Stack(
+                              alignment: Alignment.topCenter,
+                              children: <Widget>[
+                                Image.asset(carImage(doc['tipe'])),
+                                Text(
+                                  doc['tipe'],
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                );
+              },
+            ),
     );
   }
 }
@@ -34,22 +97,120 @@ class _MyCarsState extends State<MyCars> {
 class AddCar extends StatelessWidget {
   final TextEditingController _rangkaController = TextEditingController();
   final TextEditingController _mesinController = TextEditingController();
-  final TextEditingController _kodeController = TextEditingController();
+  final TextEditingController _pinController = TextEditingController();
 
-  void _tambahBaru() async {
+  void _tambahBaru(BuildContext context) async {
     if (_rangkaController.text.isEmpty) return;
     if (_mesinController.text.isEmpty) return;
-    
+
     QuerySnapshot qs = await Firestore.instance
         .collection('mobil')
         .where('no_rangka', isEqualTo: _rangkaController.text)
         .where('no_mesin', isEqualTo: _mesinController.text)
         .getDocuments();
-    
-    
+
+    if (qs.documents.isEmpty) {
+      Fluttertoast.showToast(msg: 'Mobil tidak ditemukan');
+      return;
+    }
+
+    DocumentSnapshot ds = qs.documents.first;
+
+    if (ds['owned']) {
+      Fluttertoast.showToast(msg: 'Mobil sudah dimiliki');
+      return;
+    }
+
+    String pin = (Random().nextInt(89999) + 10000).toString();
+
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+
+    Firestore.instance
+        .collection('users')
+        .document(user.uid)
+        .collection('mobil')
+        .document(ds.documentID)
+        .setData({
+      'no_rangka': ds['no_rangka'],
+      'no_mesin': ds['no_mesin'],
+      'tipe': ds['tipe'],
+      'tahun': ds['tahun'],
+      'owned': true,
+      'pin': pin,
+      'created_at': FieldValue.serverTimestamp(),
+    });
+
+    ds.reference.updateData({
+      'owned': true,
+      'owner': user.uid,
+      'pin': pin,
+    });
+
+    Navigator.of(context).pop();
   }
 
-  void _tambahBekas() {}
+  void _tambahBekas(BuildContext context) async {
+    if (_rangkaController.text.isEmpty) return;
+    if (_mesinController.text.isEmpty) return;
+    if (_pinController.text.isEmpty) return;
+
+    QuerySnapshot qs = await Firestore.instance
+        .collection('mobil')
+        .where('no_rangka', isEqualTo: _rangkaController.text)
+        .where('no_mesin', isEqualTo: _mesinController.text)
+        .getDocuments();
+
+    if (qs.documents.isEmpty) {
+      Fluttertoast.showToast(msg: 'Mobil tidak ditemukan');
+      return;
+    }
+
+    DocumentSnapshot ds = qs.documents.first;
+
+    if (!ds['owned']) {
+      Fluttertoast.showToast(msg: 'Mobil belum dimiliki');
+      return;
+    }
+
+    if (ds['pin'] != _pinController.text) {
+      Fluttertoast.showToast(msg: 'PIN Salah');
+      return;
+    }
+
+    String pin = (Random().nextInt(89999) + 10000).toString();
+
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+
+    Firestore.instance
+        .collection('users')
+        .document(ds['owner'])
+        .collection('mobil')
+        .document(ds.documentID)
+        .delete();
+
+    Firestore.instance
+        .collection('users')
+        .document(user.uid)
+        .collection('mobil')
+        .document(ds.documentID)
+        .setData({
+      'no_rangka': ds['no_rangka'],
+      'no_mesin': ds['no_mesin'],
+      'tipe': ds['tipe'],
+      'tahun': ds['tahun'],
+      'owned': true,
+      'pin': pin,
+      'created_at': FieldValue.serverTimestamp(),
+    });
+
+    ds.reference.updateData({
+      'owned': true,
+      'owner': user.uid,
+      'pin': pin,
+    });
+
+    Navigator.of(context).pop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +257,7 @@ class AddCar extends StatelessWidget {
                         color: MERAH,
                         textColor: Colors.white,
                         child: Text('ADD'),
-                        onPressed: _tambahBaru,
+                        onPressed: () => _tambahBaru(context),
                       ),
                     ],
                   ),
@@ -117,16 +278,16 @@ class AddCar extends StatelessWidget {
                         keyboardType: TextInputType.number,
                       ),
                       TextField(
-                        controller: _kodeController,
+                        controller: _pinController,
                         textAlign: TextAlign.center,
-                        decoration: InputDecoration(hintText: 'Kode'),
-                        keyboardType: TextInputType.text,
+                        decoration: InputDecoration(hintText: 'PIN'),
+                        keyboardType: TextInputType.number,
                       ),
                       RaisedButton(
                         color: MERAH,
                         textColor: Colors.white,
                         child: Text('ADD'),
-                        onPressed: _tambahBekas,
+                        onPressed: () => _tambahBekas(context),
                       ),
                     ],
                   ),
@@ -141,6 +302,8 @@ class AddCar extends StatelessWidget {
 }
 
 class CarDetail extends StatefulWidget {
+  final String id;
+  const CarDetail({Key key, @required this.id}) : super(key: key);
   @override
   _CarDetailState createState() => _CarDetailState();
 }

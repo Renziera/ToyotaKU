@@ -29,6 +29,13 @@ class _HomeState extends State<Home> {
 
   void _addData() async {
     switch (_index) {
+      case 0:
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return TambahAntrian();
+            });
+        break;
       case 1:
         showDialog(
             context: context,
@@ -106,6 +113,62 @@ class _HomeState extends State<Home> {
   }
 }
 
+class TambahAntrian extends StatelessWidget {
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Tambah Antrian Servis'),
+      content: TextField(
+        controller: _controller,
+        decoration: InputDecoration(hintText: 'PIN'),
+      ),
+      actions: <Widget>[
+        RaisedButton(
+          color: Colors.red,
+          child: Text('Batal'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        RaisedButton(
+          color: Colors.blue,
+          child: Text('Tambah'),
+          onPressed: () async {
+            if (_controller.text.isEmpty) return;
+            QuerySnapshot qs = await firestore()
+                .collection('mobil')
+                .where('pin', '==', _controller.text)
+                .get();
+            if (qs.empty) {
+              _controller.clear();
+              return;
+            }
+
+            var data = qs.docs.first.data();
+            firestore()
+                .collection('users')
+                .doc(data['owner'])
+                .update(data: {'servis': true});
+
+            firestore().collection('antrian').add({
+              'tipe': data['tipe'],
+              'no_rangka': data['no_rangka'],
+              'no_mesin': data['no_mesin'],
+              'owner': data['owner'],
+              'id_mobil': qs.docs.first.id,
+              'created_at': FieldValue.serverTimestamp(),
+            });
+
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
+  }
+}
+
 class TambahSparePart extends StatelessWidget {
   final TextEditingController _namaController = TextEditingController();
   final TextEditingController _mobilController = TextEditingController();
@@ -151,7 +214,7 @@ class TambahSparePart extends StatelessWidget {
           onPressed: () {
             if (_namaController.text.isEmpty ||
                 _mobilController.text.isEmpty ||
-                _partController.text.isEmpty||
+                _partController.text.isEmpty ||
                 _kodeController.text.isEmpty) return;
             firestore().collection('spareparts').add({
               'nama': _namaController.text,

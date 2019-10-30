@@ -309,12 +309,105 @@ class CarDetail extends StatefulWidget {
 }
 
 class _CarDetailState extends State<CarDetail> {
+  DocumentSnapshot _ds;
+
+  @override
+  void initState() {
+    super.initState();
+    Firestore.instance.collection('mobil').document(widget.id).get().then((ds) {
+      setState(() {
+        _ds = ds;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(''),
+        title: Text('Car Detail'),
       ),
+      body: _ds == null
+          ? Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Text(
+                      _ds['tipe'],
+                      style: TextStyle(
+                        color: MERAH,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      _ds['tahun'],
+                      style: TextStyle(
+                        color: MERAH,
+                        fontSize: 24,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text('Nomor Rangka'),
+                    Text(
+                      _ds['no_rangka'],
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    SizedBox(height: 8),
+                    Text('Nomor Mesin'),
+                    Text(
+                      _ds['no_mesin'],
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    SizedBox(height: 8),
+                    Text('PIN'),
+                    Text(
+                      _ds['pin'],
+                      style: TextStyle(color: MERAH, fontSize: 20),
+                    ),
+                    SizedBox(height: 16),
+                    Image.asset(carImage(_ds['tipe'])),
+                    SizedBox(height: 16),
+                    Text(
+                      'LATEST MAINTENANCE',
+                      style: TextStyle(color: MERAH, fontSize: 20),
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      'REGISTERED PARTS',
+                      style: TextStyle(color: MERAH, fontSize: 20),
+                    ),
+                    StreamBuilder<QuerySnapshot>(
+                      stream: _ds.reference
+                          .collection('spareparts')
+                          .orderBy('nama')
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) return Text(snapshot.error);
+                        if (snapshot.connectionState == ConnectionState.waiting)
+                          return Center(child: CircularProgressIndicator());
+                        return ListView(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          children: snapshot.data.documents.map((doc) {
+                            return ListTile(
+                              title: Text(doc['nama']),
+                              subtitle: Text(doc['parts_number']),
+                              isThreeLine: true,
+                              leading: Icon(Icons.settings),
+                              onTap: () {},
+                            );
+                          }).toList(),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 }

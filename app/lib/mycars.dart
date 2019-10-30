@@ -375,6 +375,35 @@ class _CarDetailState extends State<CarDetail> {
                       'LATEST MAINTENANCE',
                       style: TextStyle(color: MERAH, fontSize: 20),
                     ),
+                    StreamBuilder<QuerySnapshot>(
+                      stream: _ds.reference
+                          .collection('servis')
+                          .orderBy('masuk', descending: true)
+                          .limit(3)
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) return Text(snapshot.error);
+                        if (snapshot.connectionState == ConnectionState.waiting)
+                          return Center(child: CircularProgressIndicator());
+                        return ListView(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          children: snapshot.data.documents.map((doc) {
+                            Timestamp ts = doc['masuk'];
+                            DateTime masuk = ts.toDate();
+                            ts = doc['keluar'];
+                            DateTime keluar = ts.toDate();
+                            return ListTile(
+                              title: Text('${masuk.day} - ${masuk.month} - ${masuk.year}'),
+                              subtitle: Text('${masuk.hour}:${masuk.minute} - ${keluar.hour}:${keluar.minute}'),
+                              isThreeLine: true,
+                              leading: Icon(Icons.settings_applications),
+                              onTap: () {},
+                            );
+                          }).toList(),
+                        );
+                      },
+                    ),
                     SizedBox(height: 16),
                     Text(
                       'REGISTERED PARTS',

@@ -22,7 +22,7 @@ class _MobilState extends State<Mobil> {
         return ListView(
           children: snapshot.data.docs.map((doc) {
             return ListTile(
-              title: Text(doc.data()['tipe']),
+              title: Text(doc.data()['tipe'] + ' ' + doc.data()['tahun']),
               subtitle:
                   Text(doc.data()['no_rangka'] + '\n' + doc.data()['no_mesin']),
               isThreeLine: true,

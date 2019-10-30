@@ -29,6 +29,13 @@ class _HomeState extends State<Home> {
 
   void _addData() async {
     switch (_index) {
+      case 1:
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return TambahSparePart();
+            });
+        break;
       case 2:
         showDialog(
             context: context,
@@ -60,7 +67,7 @@ class _HomeState extends State<Home> {
                 'Admin ToyotaKU',
                 style: TextStyle(color: Colors.white, fontSize: 48),
               ),
-              decoration: BoxDecoration(color: Colors.blue),
+              decoration: BoxDecoration(color: Colors.red),
             ),
             ListTile(
               title: Text('Antrian'),
@@ -95,6 +102,69 @@ class _HomeState extends State<Home> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class TambahSparePart extends StatelessWidget {
+  final TextEditingController _namaController = TextEditingController();
+  final TextEditingController _mobilController = TextEditingController();
+  final TextEditingController _partController = TextEditingController();
+  final TextEditingController _kodeController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Tambah Spare Parts'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          TextField(
+            controller: _namaController,
+            decoration: InputDecoration(hintText: 'Nama Part'),
+          ),
+          TextField(
+            controller: _mobilController,
+            decoration: InputDecoration(hintText: 'Tipe Mobil'),
+          ),
+          TextField(
+            controller: _partController,
+            decoration: InputDecoration(hintText: 'Parts Number'),
+          ),
+          TextField(
+            controller: _kodeController,
+            decoration: InputDecoration(hintText: 'Kode'),
+          ),
+        ],
+      ),
+      actions: <Widget>[
+        RaisedButton(
+          color: Colors.red,
+          child: Text('Batal'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        RaisedButton(
+          color: Colors.blue,
+          child: Text('Tambah'),
+          onPressed: () {
+            if (_namaController.text.isEmpty ||
+                _mobilController.text.isEmpty ||
+                _partController.text.isEmpty||
+                _kodeController.text.isEmpty) return;
+            firestore().collection('spareparts').add({
+              'nama': _namaController.text,
+              'mobil': _mobilController.text,
+              'parts_number': _partController.text,
+              'kode': _kodeController.text,
+              'new': true,
+              'created_at': FieldValue.serverTimestamp(),
+            });
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
     );
   }
 }
@@ -144,7 +214,8 @@ class TambahMobil extends StatelessWidget {
           onPressed: () {
             if (_tipeController.text.isEmpty ||
                 _rangkaController.text.isEmpty ||
-                _mesinController.text.isEmpty) return;
+                _mesinController.text.isEmpty ||
+                _tahunController.text.isEmpty) return;
             firestore().collection('mobil').add({
               'tipe': _tipeController.text,
               'tahun': _tahunController.text,

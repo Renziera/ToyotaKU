@@ -9,7 +9,7 @@ class Dashboard extends StatelessWidget {
     return MaterialApp(
       title: 'ToyotaKU',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.red,
       ),
       home: Login(),
     );

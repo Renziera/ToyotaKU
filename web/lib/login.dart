@@ -27,6 +27,8 @@ class _LoginState extends State<Login> {
             ),
             SizedBox(height: 48),
             RaisedButton(
+              color: Colors.red,
+              textColor: Colors.white,
               child: Text('MASUK'),
               onPressed: () {
                 if (_controller.text != 'toyotaku') return;

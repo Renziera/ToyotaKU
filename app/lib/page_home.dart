@@ -67,29 +67,18 @@ class _HomePageState extends State<HomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  FlatButton(
-                    child: SizedBox(
-                      height: 96,
-                      width: 72,
-                      child: Center(child: Text('A')),
-                    ),
-                    onPressed: () => widget.setPage(2),
+                  GestureDetector(
+                    onTap: () => widget.setPage(2),
+                    child: Image.asset('img/legit.png', height: 96, width: 96),
                   ),
-                  FlatButton(
-                    child: SizedBox(
-                      height: 96,
-                      width: 72,
-                      child: Center(child: Text('B')),
-                    ),
-                    onPressed: () => widget.setPage(1),
+                  GestureDetector(
+                    onTap: () => widget.setPage(1),
+                    child:
+                        Image.asset('img/my_cars.png', height: 96, width: 96),
                   ),
-                  FlatButton(
-                    child: SizedBox(
-                      height: 96,
-                      width: 72,
-                      child: Center(child: Text('C')),
-                    ),
-                    onPressed: () => widget.setPage(3),
+                  GestureDetector(
+                    onTap: () => widget.setPage(3),
+                    child: Image.asset('img/world.png', height: 96, width: 96),
                   ),
                 ],
               ),
@@ -97,30 +86,9 @@ class _HomePageState extends State<HomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  FlatButton(
-                    child: SizedBox(
-                      height: 96,
-                      width: 72,
-                      child: Center(child: Text('D')),
-                    ),
-                    onPressed: () {},
-                  ),
-                  FlatButton(
-                    child: SizedBox(
-                      height: 96,
-                      width: 72,
-                      child: Center(child: Text('E')),
-                    ),
-                    onPressed: () {},
-                  ),
-                  FlatButton(
-                    child: SizedBox(
-                      height: 96,
-                      width: 72,
-                      child: Center(child: Text('F')),
-                    ),
-                    onPressed: () {},
-                  ),
+                  Image.asset('img/sched.png', height: 96, width: 96),
+                  Image.asset('img/book.png', height: 96, width: 96),
+                  Image.asset('img/more.png', height: 96, width: 96),
                 ],
               ),
               SizedBox(height: 16),

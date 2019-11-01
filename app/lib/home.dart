@@ -39,7 +39,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: _pages[_index],
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.check),
+        child: Image.asset('img/qr_code.png', height: 24, width: 24),
         backgroundColor: MERAH,
         onPressed: () {
           setState(() {

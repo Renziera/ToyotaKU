@@ -76,6 +76,13 @@ flutter:
     - img/gt86.png
     - img/cruiser.png
     - img/supra.png
+    - img/qr_code.png
+    - img/legit.png
+    - img/my_cars.png
+    - img/world.png
+    - img/sched.png
+    - img/book.png
+    - img/more.png
 
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg

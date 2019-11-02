@@ -83,6 +83,12 @@ flutter:
     - img/sched.png
     - img/book.png
     - img/more.png
+    - img/card1.png
+    - img/card2.png
+    - img/card3.png
+    - img/card4.png
+    - img/card5.png
+    - img/card6.png
 
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
